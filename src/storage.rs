@@ -14,7 +14,7 @@ const MAGIC: u32 = 0xDEADBEEF;
 pub fn new(matches: &ArgMatches) -> Storage {
     let mut storage = Storage {
         magic: MAGIC,
-        passwords: HashMap::new(),
+        passwords: Some(HashMap::new()),
         secret: String::from(matches.value_of("secret").unwrap())
     };
 
@@ -34,7 +34,7 @@ pub fn new(matches: &ArgMatches) -> Storage {
 #[derive(Serialize, Deserialize)]
 pub struct Storage {
     magic: u32,
-    passwords: HashMap<String, String>,
+    passwords: Option<HashMap<String, String>>,
     #[serde(skip_serializing)]
     secret: String
 }
@@ -42,15 +42,15 @@ pub struct Storage {
 impl Storage {
     pub fn set(&mut self, provider: String, value: String) -> bool {
         if let None = self.get(provider.clone()) {
-            self.passwords.insert(provider, value);
+            self.passwords.as_mut().unwrap().insert(provider, value);
             true
         } else {
             false
         }
     }
 
-    pub fn get(&self, provider: String) -> Option<String> {
-        if let Some(password) = self.passwords.get(provider.as_str()) {
+    pub fn get(&mut self, provider: String) -> Option<String> {
+        if let Some(password) = self.passwords.as_mut().unwrap().get(provider.as_str()) {
             Some(password.clone())
         } else {
             None
@@ -64,7 +64,7 @@ impl Storage {
         while !eligible {
             let mut unique = true;
 
-            for (_, password) in self.passwords.iter() {
+            for (_, password) in self.passwords.as_mut().unwrap().iter() {
                 if *password == generated {
                     unique = false
                 }
@@ -81,7 +81,7 @@ impl Storage {
 
     pub fn del(&mut self, provider: String) -> bool {
         if let None = self.get(provider.clone()) {
-            let _ = self.passwords.remove(provider.as_str());
+            let _ = self.passwords.as_mut().unwrap().remove(provider.as_str());
             true
         } else {
             false
