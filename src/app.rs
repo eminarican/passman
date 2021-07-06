@@ -76,6 +76,7 @@ pub fn subcommand(matches: &ArgMatches) -> Subcommand {
             provider: matches.value_of("provider").unwrap().to_string(),
         }
     } else {
+        println!("Please use --help flag for gathering more info");
         exit(0)
     }
 }

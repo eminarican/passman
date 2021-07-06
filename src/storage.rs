@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 use clap::ArgMatches;
 use std::path::Path;
+use std::process::exit;
 
 const PATH: &str = "./storage.bin";
 const MAGIC: u32 = 0xDEADBEEF;
@@ -16,7 +17,10 @@ pub fn new(matches: &ArgMatches) -> Storage {
         println!("created new password file");
         storage.save()
     } else {
-        storage.load()
+        if !storage.load() {
+            println!("secret isn't correct");
+            exit(0)
+        }
     }
 
     storage
@@ -32,5 +36,7 @@ pub struct Storage {
 
 impl Storage {
     pub fn save(&self) {}
-    fn load(&self) {}
+    fn load(&self) -> bool {
+        false
+    }
 }
