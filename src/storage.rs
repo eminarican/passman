@@ -2,6 +2,8 @@ use std::collections::HashMap;
 use clap::ArgMatches;
 use std::path::Path;
 use std::process::exit;
+use rand::Rng;
+use rand::distributions::Alphanumeric;
 
 const PATH: &str = "./storage.bin";
 const MAGIC: u32 = 0xDEADBEEF;
@@ -53,7 +55,21 @@ impl Storage {
     }
 
     pub fn gen(&mut self, provider: String) -> bool {
-        // Todo: generate password
+        let mut generated: String = generate();
+        let mut eligible = false;
+        while !eligible {
+            let mut unique = true;
+            for (_, password) in self.passwords.iter() {
+                if *password == generated {
+                    unique = false
+                }
+            }
+            if unique {
+                eligible = true
+            } else {
+                generated = generate()
+            }
+        }
         self.set(provider, "".to_string())
     }
 
@@ -68,6 +84,14 @@ impl Storage {
 
     pub fn save(&self) {}
     fn load(&self) -> bool {
-        false
+        true
     }
+}
+
+fn generate() -> String {
+    rand::thread_rng()
+        .sample_iter(&Alphanumeric)
+        .take(16)
+        .map(char::from)
+        .collect()
 }
