@@ -1,4 +1,5 @@
 use clap::{App, Arg, ArgMatches};
+use std::process::exit;
 
 pub fn new() -> ArgMatches {
     let provider = Arg::new("provider")
@@ -60,7 +61,7 @@ pub fn subcommand(matches: &ArgMatches) -> Subcommand {
     return if let Some(matches) = matches.subcommand_matches("set") {
         Subcommand::Set {
             provider: matches.value_of("provider").unwrap().to_string(),
-            value: matches.value_of("value").unwrap().to_string,
+            value: matches.value_of("value").unwrap().to_string(),
         }
     } else if let Some(matches) = matches.subcommand_matches("get") {
         Subcommand::Get {
@@ -74,5 +75,7 @@ pub fn subcommand(matches: &ArgMatches) -> Subcommand {
         Subcommand::Del {
             provider: matches.value_of("provider").unwrap().to_string(),
         }
+    } else {
+        exit(0)
     }
 }
