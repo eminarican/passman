@@ -4,6 +4,9 @@ use std::path::Path;
 use std::process::exit;
 use rand::Rng;
 use rand::distributions::Alphanumeric;
+use cocoon::Cocoon;
+use std::fs::File;
+use std::io::Read;
 
 const PATH: &str = "./storage.bin";
 const MAGIC: u32 = 0xDEADBEEF;
@@ -57,13 +60,16 @@ impl Storage {
     pub fn gen(&mut self, provider: String) -> bool {
         let mut generated: String = generate();
         let mut eligible = false;
+
         while !eligible {
             let mut unique = true;
+
             for (_, password) in self.passwords.iter() {
                 if *password == generated {
                     unique = false
                 }
             }
+
             if unique {
                 eligible = true
             } else {
@@ -82,9 +88,32 @@ impl Storage {
         }
     }
 
-    pub fn save(&self) {}
-    fn load(&self) -> bool {
-        true
+    pub fn save(&self) {
+        let encoded = bincode::serialize(self).unwrap();
+        let cocoon = Cocoon::new(self.secret.as_bytes());
+        let path = Path::new(PATH);
+        let mut file: File;
+
+        if path.exists() {
+            file = File::open(path).unwrap();
+        } else {
+            file = File::create(path).unwrap();
+        }
+        let _ = cocoon.dump(encoded, &mut file);
+    }
+
+    fn load(&mut self) -> bool {
+        let mut file = File::open(Path::new(PATH)).unwrap();
+        let cocoon = Cocoon::new(self.secret.as_bytes());
+        let mut buffer;
+        file.read(&mut buffer);
+        if let Ok(buffer) = cocoon.unwrap(&buffer) {
+            let storage: Storage = bincode::deserialize(&buffer[..]).unwrap();
+            self.passwords = storage.passwords;
+            true
+        } else {
+            false
+        }
     }
 }
 
