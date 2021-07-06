@@ -16,7 +16,7 @@ impl Passman {
         }
     }
 
-    fn start(self) {
+    fn start(mut self) {
         loop {
             self.ui.render();
             if let Some(key) = self.input.handle() {
