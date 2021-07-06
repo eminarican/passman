@@ -41,20 +41,38 @@ pub fn new() -> ArgMatches {
 }
 
 pub enum Subcommand {
-    Set,
-    Get,
-    Gen,
-    Del,
+    Set {
+        provider: String,
+        value: String
+    },
+    Get {
+        provider: String
+    },
+    Gen {
+        provider: String
+    },
+    Del {
+        provider: String
+    },
 }
 
 pub fn subcommand(matches: &ArgMatches) -> Subcommand {
-    return if matches.subcommand_matches("set") {
-        Subcommand::Set
-    } else if matches.subcommand_matches("get") {
-        Subcommand::Get
-    } else if matches.subcommand_matches("gen") {
-        Subcommand::Gen
-    } else if matches.subcommand_matches("del") {
-        Subcommand::Del
+    return if let Some(matches) = matches.subcommand_matches("set") {
+        Subcommand::Set {
+            provider: matches.value_of("provider").unwrap().to_string(),
+            value: matches.value_of("value").unwrap().to_string,
+        }
+    } else if let Some(matches) = matches.subcommand_matches("get") {
+        Subcommand::Get {
+            provider: matches.value_of("provider").unwrap().to_string(),
+        }
+    } else if let Some(matches) = matches.subcommand_matches("gen") {
+        Subcommand::Gen {
+            provider: matches.value_of("provider").unwrap().to_string(),
+        }
+    } else if let Some(matches) = matches.subcommand_matches("del") {
+        Subcommand::Del {
+            provider: matches.value_of("provider").unwrap().to_string(),
+        }
     }
 }

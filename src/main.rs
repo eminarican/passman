@@ -8,16 +8,16 @@ fn main() {
     let storage = storage::new(&matches);
 
     match app::subcommand(&matches) {
-        Subcommand::Set => {
+        Subcommand::Set{ provider, value } => {
 
         }
-        Subcommand::Get => {
+        Subcommand::Get{ provider } => {
 
         }
-        Subcommand::Gen => {
+        Subcommand::Gen{ provider } => {
 
         }
-        Subcommand::Del => {
+        Subcommand::Del{ provider } => {
 
         }
     }
