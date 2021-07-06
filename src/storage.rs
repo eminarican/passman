@@ -4,15 +4,15 @@ use std::path::Path;
 use std::process::exit;
 use rand::Rng;
 use rand::distributions::Alphanumeric;
-use cocoon::Cocoon;
+use cocoon::{Cocoon, Error};
 use std::fs::File;
-use std::io::Read;
+use std::result::Result::Err;
 
 const PATH: &str = "./storage.bin";
 const MAGIC: u32 = 0xDEADBEEF;
 
 pub fn new(matches: &ArgMatches) -> Storage {
-    let storage = Storage {
+    let mut storage = Storage {
         magic: MAGIC,
         passwords: HashMap::new(),
         secret: String::from(matches.value_of("secret").unwrap())
@@ -103,14 +103,19 @@ impl Storage {
     }
 
     fn load(&mut self) -> bool {
-        let mut file = File::open(Path::new(PATH)).unwrap();
         let cocoon = Cocoon::new(self.secret.as_bytes());
-        let mut buffer;
-        file.read(&mut buffer);
+        let buffer = std::fs::read(Path::new(PATH)).unwrap();
         if let Ok(buffer) = cocoon.unwrap(&buffer) {
-            let storage: Storage = bincode::deserialize(&buffer[..]).unwrap();
-            self.passwords = storage.passwords;
-            true
+            match bincode::deserialize::<Storage>(&buffer[..]) {
+                Ok(storage) => {
+                    self.passwords = storage.passwords;
+                    true
+                }
+                Err(err) => {
+                    eprintln!("{}", err);
+                    false
+                }
+            }
         } else {
             false
         }
