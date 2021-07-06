@@ -1,26 +1,24 @@
+use app::Subcommand;
+
 mod storage;
 mod app;
 
 fn main() {
-    let matches = app::get_matches();
+    let matches = app::new();
+    let storage = storage::new(&matches);
 
-    if let Some(matches) = matches.subcommand_matches("new") {
-        let password = matches.value_of("secret").unwrap();
-        println!("new {}", password)
-    }
+    match app::subcommand(&matches) {
+        Subcommand::Set => {
 
-    if storage::exists() {
-        if let Some(matches) = matches.subcommand_matches("set") {
-            let password = matches.value_of("secret").unwrap();
-            println!("set {}", password)
-        } else if let Some(matches) = matches.subcommand_matches("get") {
-            let password = matches.value_of("secret").unwrap();
-            println!("get {}", password)
-        } else if let Some(matches) = matches.subcommand_matches("gen") {
-            let password = matches.value_of("secret").unwrap();
-            println!("gen {}", password)
         }
-    } else {
-        println!("You should create new password file type --help for more information")
+        Subcommand::Get => {
+
+        }
+        Subcommand::Gen => {
+
+        }
+        Subcommand::Del => {
+
+        }
     }
 }

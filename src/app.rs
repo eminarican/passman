@@ -1,13 +1,6 @@
 use clap::{App, Arg, ArgMatches};
 
-pub fn get_matches() -> ArgMatches {
-    let secret = Arg::new("secret")
-        .about("Sets secret")
-        .value_name("password")
-        .takes_value(true)
-        .required(true)
-        .long("secret")
-        .short('s');
+pub fn new() -> ArgMatches {
     let provider = Arg::new("provider")
         .about("Sets provider")
         .value_name("provider")
@@ -15,17 +8,16 @@ pub fn get_matches() -> ArgMatches {
     App::new("Passman")
         .version("0.1.0")
         .about("Personal password manager")
-        .subcommand(App::new("new")
-            .about("Creates new password file")
-            .arg(Arg::new("secret")
-                .about("Sets secret")
-                .value_name("password")
-                .required(true)
-            )
+        .arg(Arg::new("secret")
+            .about("Sets secret")
+            .value_name("password")
+            .takes_value(true)
+            .required(true)
+            .long("secret")
+            .short('s')
         )
         .subcommand(App::new("set")
             .about("Sets a new password")
-            .arg(&secret)
             .arg(&provider)
             .arg(Arg::new("value")
                 .about("Sets value")
@@ -35,13 +27,34 @@ pub fn get_matches() -> ArgMatches {
         )
         .subcommand(App::new("get")
             .about("Gets a password")
-            .arg(&secret)
             .arg(&provider)
         )
         .subcommand(App::new("gen")
             .about("Generates a password")
-            .arg(&secret)
+            .arg(&provider)
+        )
+        .subcommand(App::new("del")
+            .about("Deletes a password")
             .arg(&provider)
         )
         .get_matches()
+}
+
+pub enum Subcommand {
+    Set,
+    Get,
+    Gen,
+    Del,
+}
+
+pub fn subcommand(matches: &ArgMatches) -> Subcommand {
+    return if matches.subcommand_matches("set") {
+        Subcommand::Set
+    } else if matches.subcommand_matches("get") {
+        Subcommand::Get
+    } else if matches.subcommand_matches("gen") {
+        Subcommand::Gen
+    } else if matches.subcommand_matches("del") {
+        Subcommand::Del
+    }
 }
