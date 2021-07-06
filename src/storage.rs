@@ -35,6 +35,37 @@ pub struct Storage {
 }
 
 impl Storage {
+    pub fn set(&mut self, provider: String, value: String) -> bool {
+        if let None = self.get(provider.clone()) {
+            self.passwords.insert(provider, value);
+            true
+        } else {
+            false
+        }
+    }
+
+    pub fn get(&self, provider: String) -> Option<String> {
+        if let Some(password) = self.passwords.get(provider.as_str()) {
+            Some(password.clone())
+        } else {
+            None
+        }
+    }
+
+    pub fn gen(&mut self, provider: String) -> bool {
+        // Todo: generate password
+        self.set(provider, "".to_string())
+    }
+
+    pub fn del(&mut self, provider: String) -> bool {
+        if let None = self.get(provider.clone()) {
+            let _ = self.passwords.remove(provider.as_str());
+            true
+        } else {
+            false
+        }
+    }
+
     pub fn save(&self) {}
     fn load(&self) -> bool {
         false
