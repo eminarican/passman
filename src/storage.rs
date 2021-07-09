@@ -21,7 +21,7 @@ pub fn new(matches: &ArgMatches) -> Storage {
         storage.save()
     } else {
         if !storage.load() {
-            println!("secret isn't correct");
+            println!("either secret isn't correct or password file corrupted");
             exit(0)
         }
     }
@@ -108,7 +108,6 @@ impl Storage {
                     true
                 }
                 Err(err) => {
-                    eprintln!("{}", err);
                     false
                 }
             }
