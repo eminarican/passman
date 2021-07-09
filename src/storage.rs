@@ -102,18 +102,13 @@ impl Storage {
         let cocoon = Cocoon::new(self.secret.as_bytes());
         let mut file = File::open(Path::new(PATH)).unwrap();
         if let Ok(buffer) = cocoon.parse(&mut file) {
-            match bincode::deserialize::<Storage>(&buffer[..]) {
-                Ok(storage) => {
-                    self.passwords = storage.passwords;
-                    true
-                }
-                Err(err) => {
-                    false
-                }
+            if let Ok(storage) = bincode::deserialize::<Storage>(&buffer[..]) {
+                self.passwords = storage.passwords;
+                true
             }
-        } else {
             false
         }
+        false
     }
 }
 
