@@ -4,7 +4,7 @@ use std::path::Path;
 use std::process::exit;
 use rand::Rng;
 use rand::distributions::Alphanumeric;
-use cocoon::{Cocoon, Error};
+use cocoon::{Cocoon};
 use std::fs::File;
 use std::result::Result::Err;
 
@@ -100,8 +100,8 @@ impl Storage {
 
     fn load(&mut self) -> bool {
         let cocoon = Cocoon::new(self.secret.as_bytes());
-        let buffer = std::fs::read(Path::new(PATH)).unwrap();
-        if let Ok(buffer) = cocoon.unwrap(&buffer) {
+        let mut file = File::open(Path::new(PATH)).unwrap();
+        if let Ok(buffer) = cocoon.parse(&mut file) {
             match bincode::deserialize::<Storage>(&buffer[..]) {
                 Ok(storage) => {
                     self.passwords = storage.passwords;
