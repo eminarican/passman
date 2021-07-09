@@ -35,7 +35,6 @@ pub fn new(matches: &ArgMatches) -> Storage {
 pub struct Storage {
     magic: u32,
     passwords: Option<HashMap<String, String>>,
-    #[serde(skip_serializing)]
     secret: String
 }
 
