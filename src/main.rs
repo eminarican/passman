@@ -41,4 +41,5 @@ fn main() {
             }
         }
     }
+    storage.save()
 }
