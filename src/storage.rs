@@ -9,11 +9,9 @@ use std::fs::File;
 use std::result::Result::Err;
 
 const PATH: &str = "./storage.bin";
-const MAGIC: u32 = 0xDEADBEEF;
 
 pub fn new(matches: &ArgMatches) -> Storage {
     let mut storage = Storage {
-        magic: MAGIC,
         passwords: HashMap::new(),
         secret: String::from(matches.value_of("secret").unwrap())
     };
@@ -33,7 +31,6 @@ pub fn new(matches: &ArgMatches) -> Storage {
 
 #[derive(Serialize, Deserialize)]
 pub struct Storage {
-    magic: u32,
     passwords: HashMap<String, String>,
     secret: String
 }
