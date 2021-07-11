@@ -4,9 +4,8 @@ use std::path::Path;
 use std::process::exit;
 use rand::Rng;
 use rand::distributions::Alphanumeric;
-use cocoon::{Cocoon};
+use cocoon::Cocoon;
 use std::fs::File;
-use std::result::Result::Err;
 
 const PATH: &str = "./storage.bin";
 
@@ -18,7 +17,6 @@ pub fn new(matches: &ArgMatches) -> Storage {
 
     if !Path::new(PATH).exists() {
         println!("created new password file");
-        storage.save()
     } else {
         if !storage.load() {
             println!("either secret isn't correct or password file corrupted");
@@ -72,11 +70,11 @@ impl Storage {
                 generated = generate()
             }
         }
-        self.set(provider, "".to_string())
+        self.set(provider, generated)
     }
 
     pub fn del(&mut self, provider: String) -> bool {
-        if let None = self.get(provider.clone()) {
+        if let Some(_) = self.get(provider.clone()) {
             let _ = self.passwords.remove(provider.as_str());
             true
         } else {
@@ -85,30 +83,26 @@ impl Storage {
     }
 
     pub fn save(&self) {
-        let encoded = bincode::serialize(self).unwrap();
         let cocoon = Cocoon::new(self.secret.as_bytes());
-        let path = Path::new(PATH);
-        let mut file: File;
-
-        if path.exists() {
-            file = File::open(path).unwrap();
-        } else {
-            file = File::create(path).unwrap();
-        }
-        let _ = cocoon.dump(encoded, &mut file);
+        let mut file = File::create(Path::new(PATH)).unwrap();
+        let serialized = bincode::serialize(self).unwrap();
+        let _ = cocoon.dump(serialized, &mut file);
     }
 
     fn load(&mut self) -> bool {
         let cocoon = Cocoon::new(self.secret.as_bytes());
-        let mut file = File::open(Path::new(PATH)).unwrap();
-        if let Ok(buffer) = cocoon.parse(&mut file) {
-            if let Ok(storage) = bincode::deserialize::<Storage>(&buffer[..]) {
-                self.passwords = storage.passwords;
+        let mut file = File::open(PATH).unwrap();
+
+        if let Ok(data) = cocoon.parse(&mut file) {
+            if let Ok(deserialized) = bincode::deserialize::<Storage>(&data[..]) {
+                self.passwords = deserialized.passwords.clone();
                 true
+            } else {
+                false
             }
+        } else {
             false
         }
-        false
     }
 }
 
