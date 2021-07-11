@@ -8,7 +8,7 @@
   </a>
 
   <a href="https://github.com/eminarican/passman/issues">
-    <img alt="GitHub Stars" src="https://img.shields.io/github/issues/eminarican/passman?style=for-the-badge">
+    <img alt="GitHub Issues" src="https://img.shields.io/github/issues/eminarican/passman?style=for-the-badge">
   </a>
 
   <a href="https://github.com/eminarican/passman/stargazers">
