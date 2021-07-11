@@ -38,6 +38,9 @@ pub fn new() -> ArgMatches {
             .about("Deletes a password")
             .arg(&provider)
         )
+        .subcommand(App::new("list")
+            .about("Lists providers")
+        )
         .get_matches()
 }
 
@@ -55,6 +58,7 @@ pub enum Subcommand {
     Del {
         provider: String
     },
+    List
 }
 
 pub fn subcommand(matches: &ArgMatches) -> Subcommand {
@@ -75,6 +79,8 @@ pub fn subcommand(matches: &ArgMatches) -> Subcommand {
         Subcommand::Del {
             provider: matches.value_of("provider").unwrap().to_string(),
         }
+    } else if let Some(_) = matches.subcommand_matches("list") {
+        Subcommand::List
     } else {
         println!("Please use --help flag for gathering more info");
         exit(0)

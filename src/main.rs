@@ -40,6 +40,15 @@ fn main() {
                 println!("couldn't delete password for provider, create new one")
             }
         }
+        Subcommand::List => {
+            if storage.passwords.len() > 0 {
+                for (provider, _) in storage.passwords.iter() {
+                    println!("{}", provider)
+                }
+            } else {
+                println!("no provider registered")
+            }
+        }
     }
     storage.save()
 }

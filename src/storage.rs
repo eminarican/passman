@@ -29,8 +29,8 @@ pub fn new(matches: &ArgMatches) -> Storage {
 
 #[derive(Serialize, Deserialize)]
 pub struct Storage {
-    passwords: HashMap<String, String>,
-    secret: String
+    pub passwords: HashMap<String, String>,
+    pub secret: String
 }
 
 impl Storage {
