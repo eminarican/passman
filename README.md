@@ -1,4 +1,4 @@
-<p align="center"><img src=".github/assets/logo.png" alt="logo"/></p>
+<p align="center"><img src=".github/assets/logo.png" width="200px" alt="logo"/></p>
 <h1 align="center">Passman</h1>
 <p align="center"><strong>personal password manager</strong></p>
 
