@@ -42,8 +42,8 @@ fn main() {
         }
         Subcommand::List => {
             if storage.passwords.len() > 0 {
-                for (provider, _) in storage.passwords.iter() {
-                    println!("{}", provider)
+                for (provider, password) in storage.passwords.iter() {
+                    println!("{}: {}", provider, password)
                 }
             } else {
                 println!("no provider registered")
