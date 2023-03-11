@@ -37,10 +37,18 @@ impl Passman {
     }
 
     pub fn remove(&mut self, provider: String) -> bool {
+        if provider.is_empty() {
+            return false
+        }
+
         self.state.storage.del(provider)
     }
 
     pub fn copy(&mut self, provider: String) -> bool {
+        if provider.is_empty() {
+            return false
+        }
+
         if let Ok(mut ctx) = ClipboardContext::new() {
             ctx.set_contents(provider).is_ok()
         } else {
@@ -49,10 +57,18 @@ impl Passman {
     }
 
     pub fn generate(&mut self, provider: String) -> bool {
+        if provider.is_empty() {
+            return false
+        }
+
         self.state.storage.gen(provider)
     }
 
     pub fn add(&mut self, provider: String, password: String) -> bool {
+        if provider.is_empty() || password.is_empty() {
+            return false
+        }
+
         self.state.storage.set(provider, password)
     }
 }
