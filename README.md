@@ -16,16 +16,6 @@
   </a>
 </p>
 
-## ⭐️ Features
-- password generating
-- secure password storing (uses a master password)
-
-## 💡 Simple usage
-```shell
-# note: it auto-generates password file when first time using with '-s' master password
-passman -s=<secret> set <provider> <password>
-passman -s=<secret> get <provider>
-passman -s=<secret> del <provider>
-passman -s=<secret> gen <provider>
-passman -s=<secret> list
-```
+## todo
+- implement password edit page
+- add remove-confirmation modal
